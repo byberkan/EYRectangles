@@ -1,0 +1,5 @@
+# Normalise line endings so the sources build cleanly on Linux and Windows alike.
+* text=auto eol=lf
+
+*.sln text eol=crlf
+*.png binary
