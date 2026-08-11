@@ -109,9 +109,7 @@ bool intersects = RectangleAnalyzer.Intersects(first, second);
 IReadOnlyList<Point2D> points = RectangleAnalyzer.GetIntersectionPoints(first, second);
 ```
 
-The boolean answers "do they intersect", the list identifies *where* — the points at which the two
-outlines cross. Each vertical side is tested against each horizontal side of the other rectangle, eight
-pairs in total, so at most eight points are produced. Points are distinct and ordered by X then Y.
+The boolean answers "do they intersect", while the list identifies where — the distinct points at which the two outlines cross. Each vertical side is tested against each horizontal side of the other rectangle, giving eight edge-pair checks in total. For two axis-aligned rectangles, at most four distinct intersection points can be produced. The result does not guarantee a specific ordering.
 
 ### 2. Containment
 
@@ -190,8 +188,7 @@ Both of B's vertical sides cut both of A's horizontal sides: 2 x 2 = **4 points*
 
 Only one side of each cuts one side of the other: 1 + 1 = **2 points**.
 
-In full: passing through gives 4, a corner overlap gives 2, a corner touch gives 1, separated rectangles
-give 0, and 8 is the maximum.
+In full: passing through can give 4 distinct intersection points, a corner overlap can give 2, a corner touch gives 1, and separated rectangles give 0. Four is the maximum number of distinct intersection points for two axis-aligned rectangles.
 
 ---
 
@@ -255,7 +252,7 @@ The brief leaves several things open. These are the decisions taken, and why.
   - A strictly contained rectangle reports no intersection points — matching the brief's Appendix 2, where
     containment and intersection are shown as separate outcomes.
   - Identical rectangles report their four corners.
-- Results are distinct and ordered by X then Y, so the output does not depend on argument order.
+- Results contain distinct points. Their ordering is not part of the method contract.
 
 ---
 
@@ -286,7 +283,7 @@ are trivially safe to call concurrently.
 | `RectangleTests.cs` | construction, derived sides, rejection of non-positive width/height, negative coordinates, value equality |
 | `ContainmentTests.cs` | strict containment, boundary contact, identical rectangles, directionality, overlap, separation |
 | `AdjacencyTests.cs` | proper / sub-line / partial in every orientation, corner contact, collinear non-overlap, contained-and-flush, symmetry |
-| `IntersectionTests.cs` | passing through, corner overlap, containment, separation, corner touch, identical rectangles, adjacency endpoints, distinctness, ordering, argument-order independence |
+| `IntersectionTests.cs` | passing through, corner overlap, containment, separation, corner touch, identical rectangles, adjacency endpoints, distinctness, argument-order independence |
 
 The scenarios from Appendices 1–3 all appear as test cases, alongside the degenerate cases the diagrams
 do not cover.
@@ -300,5 +297,4 @@ Documented additions, as the brief invites:
 2. **A console report** covering every scenario from Appendices 1–3 plus three edge cases (corner-only
    contact, identical rectangles, negative coordinates), so running the executable demonstrates the whole
    feature set without writing any code.
-3. **Deterministic ordering** of intersection points, which makes the output stable and the tests readable.
-4. **Warnings treated as errors** across both projects.
+3. **Warnings treated as errors** across both projects.
